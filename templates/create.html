@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="container">
+        <form method="post" action="/adding" enctype=multipart/form-data>
+
+            <h4>Add a new book to my Home Library</h4>
+            <label class="label_book" for="name">Name of book: </label>
+            <div class="input_book">
+                <input type="text" id="namebook" name="namebook"><br>
+            </div>
+            <label class="label_book" for="author">Author: </label>
+            <div class="input_book">
+                <input type="text" id="authorbook" name="author"><br>
+            </div>
+            <label class="label_book" for="year">Year of publication: </label>
+            <div class="input_book">
+                <input type="number" id="yearbook" name="yearbook"><br>
+            </div>
+            <label class="label_book" for="description">Description</label>
+            <div class="input_book">
+                <textarea class="inputarea_book" cols=80 rows=4 type="textbox" id="description" 
+                    name="description" placeholder="Description..."></textarea><br>
+            </div>
+            <div class="input_book">
+                <label class="label_book" for="img">Cover image:</label>
+                <input type="file" name="coverimage">
+            </div>
+
+            <div class="input_book">
+                <button class="button_save" type="submit" value="save">Save</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

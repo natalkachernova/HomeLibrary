@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h4>Issued books</h4>
+
+<table class="container">
+    <thead>
+        <tr>
+            <th>Book name</th>
+            <th>Author</th>
+            <th>Year</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <form method="POST" action="/bookinfo/{{ item[0] }}">
+                <td><a class="nav-link" method="POST" href="/bookinfo/{{ item[0] }}">{{ item[1] }}</a></td>
+                <td>{{ item[2] }}</td>
+                <td>{{ item[3] }}</td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
