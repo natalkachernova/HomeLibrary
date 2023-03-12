@@ -5,7 +5,7 @@ from wtforms import StringField, TextAreaField, BooleanField, IntegerField
 from wtforms.validators import DataRequired
 
 engine = create_engine('sqlite:///homelibrary.db')
-
+conn = engine.connect()
 meta = MetaData()
 
 homelibrary = Table(
@@ -19,7 +19,6 @@ homelibrary = Table(
     Column('issued', Boolean),
 )
 
-
 class BookLibraryForm(FlaskForm):
     namebook = StringField('namebook', validators=[DataRequired()])
     author = StringField('author', validators=[DataRequired()])
@@ -30,31 +29,24 @@ class BookLibraryForm(FlaskForm):
   
 class BooksLibrary:
   def all(self):
-    conn = engine.connect()
     sql = homelibrary.select().where(homelibrary.c.issued == False)
     result = conn.execute(sql)
-    conn.close()
     return result
 
   #SELECT
   def allissued(self):
-    conn = engine.connect()
     sql = homelibrary.select().where(homelibrary.c.issued == True)
     result = conn.execute(sql)
-    conn.close()
     return result
 
   def getbookinfo(self, id):
-    conn = engine.connect()
     sql = homelibrary.select().where(homelibrary.c.id == id)
     result = conn.execute(sql)
     row = result.fetchone()
-    conn.close()
     return row
 
   #INSERT INTO
   def create(self, namebook, author, yearbook, description, coverimage):
-    conn = engine.connect()
     sql = homelibrary.insert().values(namebook = namebook, 
                                       author = author,
                                       yearbook = yearbook,
@@ -64,17 +56,14 @@ class BooksLibrary:
     result = conn.execute(sql, [{'namebook': namebook, 'author': author, 'yearbook': yearbook,
                                  'description': description,'coverimage': coverimage, 'issued': False}])
     conn.commit()
-    conn.close()
 
   #DELETE
   def delete(self, id):
     book_id = self.getbookinfo(id)
     if book_id:
-      conn = engine.connect()
       stmt = homelibrary.delete().where(homelibrary.c.id == id)
       conn.execute(stmt)
       conn.commit()
-      conn.close()
       return True
     return False
 
@@ -82,15 +71,19 @@ class BooksLibrary:
   def update(self, id):
     book_id = self.getbookinfo(id)
     if book_id:
-      conn = engine.connect()
+
       if book_id[6]:
         stmt=homelibrary.update().where(homelibrary.c.id==id).values(issued=False)
       else:
         stmt=homelibrary.update().where(homelibrary.c.id==id).values(issued=True)
       conn.execute(stmt)
       conn.commit()
+
       return True
     return False
+
+  def __del__(self):
+    conn.close()
 
 
 bookslibrary = BooksLibrary()
